@@ -10,11 +10,12 @@ Install-Package FasterReflection
 ## Example
 
 ```csharp
+// type defined in MyAssembly.dll
 public class MyType { }
 
 var builder = new ReflectionMetadataBuilder();
-builder.AddAssemblyByType<MyType>();
-builder.AddReferenceOnlyAssemblyByType<object>();
+builder.AddAssembly("MyAssembly.dll");
+builder.AddReferenceOnlyAssemblyByType<object>(); // adds mscorlib
 var result = builder.Build();
 var myType = result.FindTypesByName("MyType").First();
 
