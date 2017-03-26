@@ -147,9 +147,8 @@ namespace FasterReflection
 
         private static LoadedAssembly TryGetAssembly(Dictionary<string, LoadedAssembly> assemblies, AssemblyReference assemblyReference, MetadataReader metadataReader, ISet<string> missingAssemblies)
         {
-            LoadedAssembly assemblyData;
             var assemblyName = metadataReader.GetString(assemblyReference.Name);
-            if (!assemblies.TryGetValue(assemblyName, out assemblyData))
+            if (!assemblies.TryGetValue(assemblyName, out var assemblyData))
             {
                 missingAssemblies.Add(assemblyName);
             }
@@ -172,8 +171,7 @@ namespace FasterReflection
             var assemblyReference = assemblyData.MetadataReader.GetAssemblyReference((AssemblyReferenceHandle)definition);
 
             var key = new TypeDefinitionKey(assemblyData.MetadataReader.GetString(assemblyReference.Name), fullName);
-            TypeDefinition type;
-            if (typeDictionary.TryGetValue(key, out type))
+            if (typeDictionary.TryGetValue(key, out var type))
             {
                 var newKey = new TypeDefinitionKey(assemblyData.Assembly.Name, fullName);
                 if (!typeDictionary.ContainsKey(newKey))
@@ -200,8 +198,7 @@ namespace FasterReflection
             var fullName = GetFullName(ns, name, declaringType);
 
             var key = new TypeDefinitionKey(assemblyData.Assembly.Name, fullName);
-            TypeDefinition def;
-            if (typeDictionary.TryGetValue(key, out def))
+            if (typeDictionary.TryGetValue(key, out var def))
             {
                 return def;
             }
@@ -215,8 +212,7 @@ namespace FasterReflection
                 return null;
             }
 
-            string baseTypeFullName;
-            var baseType = ResolveTypeHandle(assemblies, assemblyData, typeDefinition.BaseType, typeDictionary, types, out baseTypeFullName);
+            var baseType = ResolveTypeHandle(assemblies, assemblyData, typeDefinition.BaseType, typeDictionary, types, out var baseTypeFullName);
 
             var isPublic = HasAttributes(typeDefinition, TypeAttributes.Public);
             var isInterface = HasAttributes(typeDefinition, TypeAttributes.Interface);
@@ -280,8 +276,7 @@ namespace FasterReflection
             LoadedAssembly assemblyData, Handle definition, Dictionary<TypeDefinitionKey, TypeDefinition> typeDictionary,
             IList<TypeDefinition> types)
         {
-            string referenceFullName;
-            return ResolveTypeHandle(assemblies, assemblyData, definition, typeDictionary, types, out referenceFullName);
+            return ResolveTypeHandle(assemblies, assemblyData, definition, typeDictionary, types, out _);
         }
 
         private TypeDefinition ResolveTypeHandle(Dictionary<string, LoadedAssembly> assemblies, LoadedAssembly assemblyData, Handle definition, Dictionary<TypeDefinitionKey, TypeDefinition> typeDictionary, IList<TypeDefinition> types, out string referenceFullName)
@@ -300,19 +295,18 @@ namespace FasterReflection
 
             Debug.Assert(definition.Kind == HandleKind.TypeReference, "definition.Kind == HandleKind.TypeReference; actual = " + definition.Kind);
 
-            string referenceAssemblyName;
-            GetReferenceFullNameAndAssembly(definition, assemblyData.MetadataReader, out referenceFullName, out referenceAssemblyName);
+            GetReferenceFullNameAndAssembly(definition, assemblyData.MetadataReader, out referenceFullName, out var referenceAssemblyName);
 
             if (!assemblies.ContainsKey(referenceAssemblyName))
             {
                 return null;
             }
 
-            TypeDefinition def;
-            if (!typeDictionary.TryGetValue(new TypeDefinitionKey(referenceAssemblyName, referenceFullName), out def))
+            if (!typeDictionary.TryGetValue(new TypeDefinitionKey(referenceAssemblyName, referenceFullName), out var def))
             {
                 Debug.Assert(false, "Definition does not exist");
             }
+
             return def;
         }
 
@@ -401,12 +395,14 @@ namespace FasterReflection
                 {
                     throw new InvalidOperationException("Cyclic assembly references are not allowed");
                 }
+
                 var key = found[0].Key;
                 elems.Remove(key);
                 foreach (var selem in elems)
                 {
                     selem.Value.Remove(key);
                 }
+
                 yield return key;
             }
         }

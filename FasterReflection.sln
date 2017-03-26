@@ -1,20 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{496FBBA3-F719-4369-846B-18D096361A52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FasterReflection", "src\FasterReflection\FasterReflection.csproj", "{32B8F4AB-CC17-4F6E-B6B6-A26556A9EAB5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EF7B1B24-12E4-4FD4-9D4C-385F83BA2AA5}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FasterReflection.Tests", "src\FasterReflection.Tests\FasterReflection.Tests.csproj", "{D30D4DD8-1F86-4A4E-AD01-DB001E584C82}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FasterReflection", "src\FasterReflection\FasterReflection.xproj", "{32B8F4AB-CC17-4F6E-B6B6-A26556A9EAB5}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FasterReflection.Tests", "src\FasterReflection.Tests\FasterReflection.Tests.xproj", "{D30D4DD8-1F86-4A4E-AD01-DB001E584C82}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FasterReflection.TestAssembly", "src\FasterReflection.TestAssembly\FasterReflection.TestAssembly.xproj", "{1D68316B-7EDB-48E8-B945-AB1DC61C30FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FasterReflection.TestAssembly", "src\FasterReflection.TestAssembly\FasterReflection.TestAssembly.csproj", "{1D68316B-7EDB-48E8-B945-AB1DC61C30FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +30,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{32B8F4AB-CC17-4F6E-B6B6-A26556A9EAB5} = {496FBBA3-F719-4369-846B-18D096361A52}
-		{D30D4DD8-1F86-4A4E-AD01-DB001E584C82} = {496FBBA3-F719-4369-846B-18D096361A52}
-		{1D68316B-7EDB-48E8-B945-AB1DC61C30FB} = {496FBBA3-F719-4369-846B-18D096361A52}
 	EndGlobalSection
 EndGlobal

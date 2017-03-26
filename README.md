@@ -1,5 +1,5 @@
 # FasterReflection
-Utilizes System.Reflection.Metadata to read type information very fast
+Utilizes System.Reflection.Metadata to read type information very fast and without locking assembly files.
 
 ## NuGet
 
@@ -15,7 +15,7 @@ public class MyType { }
 
 var builder = new ReflectionMetadataBuilder();
 builder.AddAssembly("MyAssembly.dll");
-builder.AddReferenceOnlyAssemblyByType<object>(); // adds mscorlib
+builder.AddReferenceOnlyAssemblyByType<object>(); // adds the corlib
 var result = builder.Build();
 var myType = result.FindTypesByName("MyType").First();
 

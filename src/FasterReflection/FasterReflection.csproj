@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Utilizes System.Reflection.Metadata to read type information very fast and without locking assembly files.</Description>
+    <Authors>Eli Arbel</Authors>
+    <TargetFrameworks>netstandard1.5;net45</TargetFrameworks>
+    <PublicSign>true</PublicSign>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyOriginatorKeyFile>..\Keys\FasterReflection.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PackageTags>reflection</PackageTags>
+    <PackageProjectUrl>https://github.com/aelij/FasterReflection</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/aelij/FasterReflection/master/LICENSE</PackageLicenseUrl>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Metadata" Version="1.4.2" />
+  </ItemGroup>
+
+  <Target Name="PostcompileScript" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
+    <Exec Command="dotnet pack --no-build --configuration $(Configuration)" />
+  </Target>
+
+</Project>

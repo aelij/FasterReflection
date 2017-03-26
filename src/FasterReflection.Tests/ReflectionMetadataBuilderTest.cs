@@ -66,7 +66,7 @@ namespace FasterReflection.Tests
         [Fact]
         public void BaseTypeWithBclBaseTypeWithSystemRuntime()
         {
-            AddSystemRuntimeAssembly();
+            _builder.AddReferenceOnlyAssemblyByType<object>();
             var result = _builder.Build();
             var type = GetTypeByNameAndAssert(result, nameof(BaseTypeWithBclBaseType));
             var baseType = type.BaseType;
@@ -77,7 +77,7 @@ namespace FasterReflection.Tests
         [Fact]
         public void DerivedTypeWithBclBaseType()
         {
-            AddSystemRuntimeAssembly();
+            _builder.AddReferenceOnlyAssemblyByType<object>();
             var result = _builder.Build();
             var type = GetTypeByNameAndAssert(result, nameof(DerivedTypeWithBclBaseType));
             Assert.NotNull(type.BaseType);
@@ -106,7 +106,7 @@ namespace FasterReflection.Tests
         [Fact]
         public void BclInterfaceImplementingType()
         {
-            AddSystemRuntimeAssembly();
+            _builder.AddReferenceOnlyAssemblyByType<object>();
             var result = _builder.Build();
             var type = GetTypeByNameAndAssert(result, nameof(BclInterfaceImplementingType));
             Assert.Equal(1, type.Interfaces.Length);
@@ -116,7 +116,7 @@ namespace FasterReflection.Tests
         [Fact]
         public void InnerTypeContainerType()
         {
-            AddSystemRuntimeAssembly();
+            _builder.AddReferenceOnlyAssemblyByType<object>();
             var result = _builder.Build();
             var type = GetTypeByNameAndAssert(result, nameof(TestAssembly.InnerTypeContainerType.InnerTypeLevel1.InnerTypeLevel2));
             Assert.NotNull(type.DeclaringType);
@@ -139,13 +139,6 @@ namespace FasterReflection.Tests
             var result = _builder.Build();
             var type = GetTypeByNameAndAssert(result, nameof(ValueTypeType));
             Assert.True(type.IsValueType);
-        }
-
-        private void AddSystemRuntimeAssembly()
-        {
-            var runtimeAssembly = Assembly.Load(new AssemblyName("System.Runtime, PublicKeyToken=b03f5f7f11d50a3a"));
-            _builder.AddReferenceOnlyAssembly(runtimeAssembly.Location);
-            _builder.AddReferenceOnlyAssemblyByType<object>();
         }
 
         private static TypeDefinition GetTypeByNameAndAssert(ReflectionMetadataResult result, string name)
