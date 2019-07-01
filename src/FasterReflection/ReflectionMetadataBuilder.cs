@@ -480,7 +480,7 @@ namespace FasterReflection
                 MetadataReader = _peReader.GetMetadataReader();
                 var assemblyDefinition = MetadataReader.GetAssemblyDefinition();
                 Assembly = new AssemblyDefinition(MetadataReader.GetString(assemblyDefinition.Name),
-                    assemblyDefinition.Version);
+                    assemblyDefinition.Version, assemblyData.Location);
                 References = MetadataReader.AssemblyReferences.Select(t => MetadataReader.GetAssemblyReference(t)).ToImmutableArray();
             }
 
