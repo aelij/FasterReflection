@@ -68,14 +68,15 @@ namespace FasterReflection
         /// <summary>
         /// Gets the type definitions and a list of missing assemblies.
         /// </summary>
+        /// <param name="ingoreDuplicateAssemblies">Ignores exception when the same assembly gets loaded multiple times</param>
         /// <returns></returns>
-        public ReflectionMetadataResult Build()
+        public ReflectionMetadataResult Build(bool ingoreDuplicateAssemblies = false)
         {
             var typeDictionary = new Dictionary<TypeDefinitionKey, TypeDefinition>();
             var types = ImmutableList.CreateBuilder<TypeDefinition>();
             var missingAssembliesBuilder = ImmutableHashSet.CreateBuilder<string>();
 
-            var assemblies = LoadAssemblies();
+            var assemblies = LoadAssemblies(ingoreDuplicateAssemblies);
 
             try
             {
@@ -103,12 +104,12 @@ namespace FasterReflection
             }
 
             return new ReflectionMetadataResult(
-                types.ToImmutable(), 
+                types.ToImmutable(),
                 assemblies.Select(x => x.Value.Assembly).ToImmutableList(),
                 missingAssembliesBuilder.ToImmutable());
         }
 
-        private Dictionary<string, LoadedAssembly> LoadAssemblies()
+        private Dictionary<string, LoadedAssembly> LoadAssemblies(bool ignoreDuplicateAssemblies = false)
         {
             var assemblies = new Dictionary<string, LoadedAssembly>();
             var exceptions = new List<Exception>();
@@ -131,10 +132,32 @@ namespace FasterReflection
             }
             if (exceptions.Count > 0)
             {
-                DisposeAssemblies(assemblies);
-                throw new AggregateException("One or more assemblies failed to load", exceptions);
+                try
+                {
+                    HandleAssemblyLoadingExceptions(ignoreDuplicateAssemblies, exceptions);
+                }
+                catch (Exception)
+                {
+                    DisposeAssemblies(assemblies);
+                    throw;
+                }
             }
             return assemblies;
+        }
+
+        private static void HandleAssemblyLoadingExceptions(bool ignoreDuplicateAssemblies, List<Exception> exceptions)
+        {
+            if (ignoreDuplicateAssemblies)
+            {
+                var uncatchables = new List<Exception>();
+                foreach (Exception ex in exceptions)
+                    if (ex.HResult != -2146233079)
+                        uncatchables.Add(ex);
+                if (uncatchables.Count > 0)
+                    throw new AggregateException("One or more assemblies failed to load", uncatchables);
+            }
+            else
+                throw new AggregateException("One or more assemblies failed to load", exceptions);
         }
 
         private static void DisposeAssemblies(Dictionary<string, LoadedAssembly> assemblies)
@@ -180,7 +203,7 @@ namespace FasterReflection
                 }
             }
         }
-        
+
         private TypeDefinition CreateTypeDefinition(Dictionary<string, LoadedAssembly> assemblies, LoadedAssembly assemblyData, TypeDefinitionHandle handle, Dictionary<TypeDefinitionKey, TypeDefinition> typeDictionary, IList<TypeDefinition> types)
         {
             var metadataReader = assemblyData.MetadataReader;
@@ -219,7 +242,7 @@ namespace FasterReflection
 
             var isValueType = baseTypeFullName != null && (baseTypeFullName.Equals(ValueTypeName, StringComparison.Ordinal) ||
                                                            baseTypeFullName.Equals(EnumTypeName, StringComparison.Ordinal));
-            
+
 
             var isAbstract = HasAttributes(typeDefinition, TypeAttributes.Abstract);
 

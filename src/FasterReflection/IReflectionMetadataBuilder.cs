@@ -21,7 +21,8 @@ namespace FasterReflection
         /// <summary>
         /// Gets the type definitions and a list of missing assemblies.
         /// </summary>
-        ReflectionMetadataResult Build();
+        /// <param name="ingoreDuplicateAssemblies">Ignores exception when the same assembly gets loaded multiple times</param>
+        ReflectionMetadataResult Build(bool ingoreDuplicateAssemblies = false);
 
         /// <summary>
         /// Determines whether to skip native (C++) types. The default is <c>true</c>.
